@@ -53,7 +53,9 @@ actions:
   - !service: {name: 'DiagTrack', operation: change, startup: 4}
 
     # ------ Microsoft recommendation - 'Do not disable' -----
-  - !service: {name: 'diagnosticshub.standardcollector.service', operation: change, startup: 4}
+    # [DataUsage-fix] Diagnostics Hub Standard Collector is an ETW consumer used by the
+    # diagnostics stack; do not disable it.
+    # - !service: {name: 'diagnosticshub.standardcollector.service', operation: change, startup: 4}
   - !service: {name: 'WerSvc', operation: change, startup: 4} 
 
     # ------- Microsoft recommendation - 'No guideance' ------

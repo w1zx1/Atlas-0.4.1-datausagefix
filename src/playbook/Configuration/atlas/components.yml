@@ -34,12 +34,14 @@ actions:
 
     # Windows components and Telemetry
   - !writeStatus: {status: 'Removing components'}
+    # [DataUsage-fix] Z-Atlas-NoTelemetry-Package is intentionally NOT installed.
+    # It removes the Unified Telemetry Client (and related Application Experience /
+    # Settings handler components) that the Data Usage (SRUM) pipeline depends on.
+    # Only the Defender package is installed now.
   - !powerShell:
     command: >-
       & """$([Environment]::GetFolderPath('Windows'))\AtlasModules\Scripts\packageInstall.ps1"""
-      -InstallPackages @('*Z-Atlas-NoDefender-Package*',
-        '*Z-Atlas-NoTelemetry-Package*'
-      )
+      -InstallPackages @('*Z-Atlas-NoDefender-Package*')
       -NoInteraction
     option: 'defender-disable'
     wait: true
@@ -47,7 +49,6 @@ actions:
   - !powerShell:
     command: >-
       & """$([Environment]::GetFolderPath('Windows'))\AtlasModules\Scripts\packageInstall.ps1"""
-      -InstallPackages @('*Z-Atlas-NoTelemetry-Package*')
       -UninstallPackages @('*Z-Atlas-NoDefender-Package*')
       -NoInteraction
     option: 'defender-enable'

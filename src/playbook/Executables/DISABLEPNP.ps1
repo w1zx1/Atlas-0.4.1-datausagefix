@@ -9,7 +9,10 @@ $devices = @(
 	"Intel Management Engine",
 	"Intel SMBus",
 	"Legacy device",
-	"Microsoft Kernel Debug Network Adapter",
+	# [DataUsage-fix] Do not disable the Kernel Debug NIC: it is a network-class
+	# device and users reported that re-enabling it restores the Task Manager
+	# network column. Disabling it is not worth the risk.
+	# "Microsoft Kernel Debug Network Adapter",
 	"Motherboard resources",
 	"Numeric Data Processor",
 	"PCI Data Acquisition and Signal Processing Controller",

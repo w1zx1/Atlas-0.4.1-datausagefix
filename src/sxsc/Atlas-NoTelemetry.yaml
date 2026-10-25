@@ -1,3 +1,6 @@
+# NOTE (DataUsage-fix): This package is intentionally NOT installed by the playbook.
+# It strips components used by Settings > Data usage / SRUM and by the Task Manager
+# network column. See DATA-USAGE-FIX.md before re-enabling it.
 copyright: Atlas
 package: Z-Atlas-NoTelemetry-Package
 target_arch: amd64

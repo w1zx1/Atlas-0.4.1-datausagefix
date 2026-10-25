@@ -7,7 +7,10 @@ param (
 $fileSharingConfigPath = "$([Environment]::GetFolderPath('Windows'))\AtlasDesktop\3. General Configuration\File Sharing"
 
 # Disable network items
-Disable-NetAdapterBinding -Name "*" -ComponentID ms_msclient, ms_server, ms_lltdio, ms_rspndr | Out-Null
+# [DataUsage-fix] Do not unbind ms_msclient/ms_server/LLTD here. Those bindings are
+# part of the NDIS stack that Ndu (Network Data Usage) monitors; leave them alone
+# so Task Manager's network column and the Data usage page keep working.
+# Disable-NetAdapterBinding -Name "*" -ComponentID ms_msclient, ms_server, ms_lltdio, ms_rspndr | Out-Null
 
 # Disable NetBios over TCP/IP
 $interfaces = Get-ChildItem "HKLM:\SYSTEM\CurrentControlSet\Services\NetBT\Parameters\Interfaces" -Recurse | Where-Object { $_.GetValue("NetbiosOptions") -ne $null }

@@ -26,7 +26,9 @@ actions:
   - !writeStatus: {status: 'Running networking tweaks'}
   # Needed for compatibility
   # - !task: {path: 'tweaks\networking\disable-llmnr.yml'}
-  - !task: {path: 'tweaks\networking\atlas-network-settings.yml'}
+  # [DataUsage-fix] Adapter/driver registry tweaks can change the NDIS accounting path
+  # used by Ndu. Disabled so the network stack stays at Windows defaults.
+  # - !task: {path: 'tweaks\networking\atlas-network-settings.yml'}
 
   # -------------------------------------------------------------------------- #
   #  networking\shares                                                         #
@@ -52,7 +54,9 @@ actions:
   - !task: {path: 'tweaks\performance\config-automatic-maintenance.yml'}
   - !task: {path: 'tweaks\performance\disable-background-apps.yml'}
   - !task: {path: 'tweaks\performance\disable-fth.yml'}
-  - !task: {path: 'tweaks\performance\disable-sleep-study.yml'}
+  # [DataUsage-fix] Disables Diagnostic ETW logs and the Power Efficiency Diagnostics
+  # task, which share the WDI/ETW diagnostics stack with SRUM.
+  # - !task: {path: 'tweaks\performance\disable-sleep-study.yml'}
   - !task: {path: 'tweaks\performance\respect-power-modes-search.yml'}
 
 
@@ -62,7 +66,9 @@ actions:
   # Disabled as there's no evidence it helps (likely placebo)
   # - !task: {path: 'tweaks\performance\system\disable-paging.yml'}
   - !task: {path: 'tweaks\performance\system\optimize-ntfs.yml'}
-  - !task: {path: 'tweaks\performance\system\disable-service-host-split.yml'}
+  # [DataUsage-fix] Merging service hosts changes the process identity/isolation of
+  # DPS, DusmSvc and WdiServiceHost; keep the default service isolation.
+  # - !task: {path: 'tweaks\performance\system\disable-service-host-split.yml'}
   - !task: {path: 'tweaks\performance\system\win32-priority-seperation.yml'}
 
 
@@ -87,7 +93,9 @@ actions:
   - !task: {path: 'tweaks\privacy\disable-lockscreen-camera.yml'}
   - !task: {path: 'tweaks\privacy\disable-online-speech-recognition.yml'}
   - !task: {path: 'tweaks\privacy\disable-pca.yml'}
-  - !task: {path: 'tweaks\privacy\disable-perf-track.yml'}
+  # [DataUsage-fix] WDI scenario execution policy; disabling WDI scenarios also
+  # affects the diagnostics/SRUM data collection path.
+  # - !task: {path: 'tweaks\privacy\disable-perf-track.yml'}
   - !task: {path: 'tweaks\privacy\disable-privacy-experience.yml'}
   - !task: {path: 'tweaks\privacy\disable-recall-snap.yml'}
   - !task: {path: 'tweaks\privacy\disable-device-monitoring.yml'}
@@ -125,10 +133,14 @@ actions:
   # -------------------------------------------------------------------------- #
   - !task: {path: 'tweaks\privacy\telemetry\disable-activation-telemetry.yml'}
   - !task: {path: 'tweaks\privacy\telemetry\disable-ceip.yml'}
-  - !task: {path: 'tweaks\privacy\telemetry\disable-diagnostic-tracing.yml'}
+  # [DataUsage-fix] Disables the diagnostic tracing subsystem that SRUM/DPS use.
+  # - !task: {path: 'tweaks\privacy\telemetry\disable-diagnostic-tracing.yml'}
   - !task: {path: 'tweaks\privacy\telemetry\disable-dotnet-cli-telemetry.yml'}
   - !task: {path: 'tweaks\privacy\telemetry\disable-input-telemetry.yml'}
-  - !task: {path: 'tweaks\privacy\telemetry\disallow-data-collection.yml'}
+  # [DataUsage-fix] Sets AllowTelemetry=0, stops DiagTrack, disables its ETW
+  # autologger and deletes its ETL logs. This is the main switch that can leave
+  # Settings > Data usage empty and Task Manager's network column at 0 Mbit/s.
+  # - !task: {path: 'tweaks\privacy\telemetry\disallow-data-collection.yml'}
 
 
 
@@ -356,7 +368,9 @@ actions:
   - !writeStatus: {status: 'Running miscellaneous tweaks'}
   - !task: {path: 'tweaks\misc\config-time.yml'}
   - !task: {path: 'tweaks\misc\delete-windows-specific-files.yml'}
-  - !task: {path: 'tweaks\misc\rebuild-perf-counters.yml'}
+  # [DataUsage-fix] lodctr /r rebuilds the whole counter registry; Task Manager and
+  # SRUM consumers can end up with missing/zero counters until the next rebuild.
+  # - !task: {path: 'tweaks\misc\rebuild-perf-counters.yml'}
   - !task: {path: 'tweaks\misc\make-measuresleep-admin.yml'}
   - !task: {path: 'tweaks\misc\create-shortcuts.yml'}
   - !task: {path: 'tweaks\misc\add-music-videos-to-home.yml'}
